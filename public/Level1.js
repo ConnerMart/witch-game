@@ -79,7 +79,7 @@ class Level1 extends Phaser.Scene {
       gameState.witch.y += 3;
     }
 
-    // if enemy exists, it moves toward witch at speed of 60:
+    // if enemy exists, it moves toward witch:
     if (gameState.enemy) {
       this.physics.moveToObject(gameState.enemy, gameState.witch, 60);
     }
@@ -91,6 +91,7 @@ class Level1 extends Phaser.Scene {
     // if witch is close enough to herb, herb changes to active texture:
     if (herbDistanceX < 100 && herbDistanceY < 100) {
       gameState.herb.setTexture("herb-active");
+      // on mouse click, creates projectile at witch's position which moves toward enemy:
       this.input.on("pointerdown", (pointer) => {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
