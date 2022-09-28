@@ -84,15 +84,13 @@ class Level1 extends Phaser.Scene {
       this.physics.moveToObject(gameState.enemy, gameState.witch, 60);
     }
 
-    // captures absolute distance between witch and herb, determines whether inRadius is true:
+    // determines whether witch is close enough to activate herb
     let herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     let herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
     gameState.inRadius = false;
-    if (herbDistanceX < 100 && herbDistanceY < 100) {
-      gameState.inRadius = true;
-    } else {
-      gameState.inRadius = false;
-    }
+    herbDistanceX < 100 && herbDistanceY < 100
+      ? (gameState.inRadius = true)
+      : (gameState.inRadius = false);
 
     // if inRadius is true, herb changes to active texture and witch can shoot projectiles
     if (gameState.inRadius) {
@@ -104,8 +102,9 @@ class Level1 extends Phaser.Scene {
         this.physics.moveToObject(launched, gameState.enemy, 80);
       });
     } else {
+      // if inRadius is false, herb returns to regular texture
       gameState.herb.setTexture("herb");
-      // TODO: with the below code, removes collider permanently; without, can always shoot after entering radius
+      // TODO: bug: with the below code, removes collider permanently; without, can always shoot after entering radius (but collider still works)
       gameState.projectiles.setActive(false).setVisible(false);
       this.physics.world.removeCollider(gameState.enemyProjectileCollider);
     }
