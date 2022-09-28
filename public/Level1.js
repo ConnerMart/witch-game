@@ -39,7 +39,7 @@ class Level1 extends Phaser.Scene {
 
     // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.projectiles = this.physics.add.group();
-    this.physics.add.collider(
+    gameState.enemyProjectileCollider = this.physics.add.collider(
       gameState.enemy,
       gameState.projectiles,
       (enemy, projectile) => {
@@ -84,14 +84,19 @@ class Level1 extends Phaser.Scene {
       this.physics.moveToObject(gameState.enemy, gameState.witch, 60);
     }
 
-    // captures absolute distance between witch and herb:
-    const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
-    const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
-
-    // if witch is close enough to herb, herb changes to active texture:
+    // captures absolute distance between witch and herb, determines whether inRadius is true:
+    let herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
+    let herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
+    gameState.inRadius = false;
     if (herbDistanceX < 100 && herbDistanceY < 100) {
+      gameState.inRadius = true;
+    } else {
+      gameState.inRadius = false;
+    }
+
+    // if inRadius is true, herb changes to active texture and witch can shoot projectiles
+    if (gameState.inRadius) {
       gameState.herb.setTexture("herb-active");
-      // on mouse click, creates projectile at witch's position which moves toward enemy:
       this.input.on("pointerdown", (pointer) => {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
@@ -100,7 +105,11 @@ class Level1 extends Phaser.Scene {
       });
     } else {
       gameState.herb.setTexture("herb");
+      // TODO: with the below code, removes collider permanently; without, can always shoot after entering radius
+      gameState.projectiles.setActive(false).setVisible(false);
+      this.physics.world.removeCollider(gameState.enemyProjectileCollider);
     }
+
     // // older version:space bar kills enemy:
     // if (herbDistanceX < 100 && herbDistanceY < 100) {
     //   gameState.herb.setTexture("herb-active");
