@@ -20,17 +20,10 @@ class Level1 extends Phaser.Scene {
     gameState.witch = this.physics.add.sprite(500, 850, "witch").setScale(0.08);
     gameState.witch.setCollideWorldBounds(true);
 
-    gameState.cursors = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
-      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-    });
-
     gameState.enemy = this.physics.add.sprite(500, 250, "enemy").setScale(0.08);
     gameState.enemy.setCollideWorldBounds(true);
 
+    // when enemy touches witch, witch disappears and game over message displays:
     gameState.enemyWitchCollider = this.physics.add.collider(
       gameState.witch,
       gameState.enemy,
@@ -44,6 +37,7 @@ class Level1 extends Phaser.Scene {
       }
     );
 
+    // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.projectiles = this.physics.add.group();
     this.physics.add.collider(
       gameState.enemy,
@@ -52,16 +46,26 @@ class Level1 extends Phaser.Scene {
         gameState.enemy.setVelocity(0, 0);
         this.physics.world.removeCollider(gameState.enemyWitchCollider);
         gameState.enemy.setActive(false).setVisible(false);
-        projectile.destroy();
+        this.physics.pause();
         this.add.text(325, 400, "Victory", {
           fontSize: "65px",
           fill: "#000000",
         });
       }
     );
+
+    gameState.cursors = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+    });
   }
 
   update() {
+    // WASD movement controls:
     if (gameState.cursors.left.isDown) {
       gameState.witch.x -= 3;
     }
@@ -75,29 +79,19 @@ class Level1 extends Phaser.Scene {
       gameState.witch.y += 3;
     }
 
+    // if enemy exists, it moves toward witch at speed of 60:
     if (gameState.enemy) {
       this.physics.moveToObject(gameState.enemy, gameState.witch, 60);
     }
 
+    // captures absolute distance between witch and herb:
     const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
 
-    // space bar shoots projectile:
-    // if (herbDistanceX < 100 && herbDistanceY < 100) {
-    //   gameState.herb.setTexture("herb-active");
-    //   if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
-    //     const launched = gameState.projectiles
-    //       .create(gameState.witch.x, gameState.witch.y, "square-projectile")
-    //       .setScale(0.05);
-    //     this.physics.moveToObject(launched, gameState.enemy, 80);
-    //   }
-    // } else {
-    //   gameState.herb.setTexture("herb");
-    // }
-
+    // if witch is close enough to herb, herb changes to active texture:
     if (herbDistanceX < 100 && herbDistanceY < 100) {
       gameState.herb.setTexture("herb-active");
-      this.input.on("pointerdown", () => {
+      this.input.on("pointerdown", (pointer) => {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
           .setScale(0.05);
@@ -106,8 +100,7 @@ class Level1 extends Phaser.Scene {
     } else {
       gameState.herb.setTexture("herb");
     }
-
-    // // space bar kills enemy:
+    // // older version:space bar kills enemy:
     // if (herbDistanceX < 100 && herbDistanceY < 100) {
     //   gameState.herb.setTexture("herb-active");
     //   if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
