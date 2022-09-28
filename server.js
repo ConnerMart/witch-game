@@ -26,6 +26,6 @@ app.get("/", function (req, res) {
   res.sendFile(__dirName + "/index.html");
 });
 
-app.listen(8080, () => {
-  console.log("Server listening on http://localhost:8080");
+app.listen(3001, () => {
+  console.log("Server listening on http://localhost:3001");
 });
