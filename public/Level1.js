@@ -61,6 +61,7 @@ class Level1 extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
       shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+      // leftMouse: Phaser.Input.MOUSE_UP,
     });
   }
 
@@ -85,29 +86,27 @@ class Level1 extends Phaser.Scene {
     }
 
     // determines whether witch is close enough to activate herb
-    let herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
-    let herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
+    const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
+    const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
     gameState.inRadius = false;
     herbDistanceX < 100 && herbDistanceY < 100
       ? (gameState.inRadius = true)
       : (gameState.inRadius = false);
 
-    // if inRadius is true, herb changes to active texture and witch can shoot projectiles
-    if (gameState.inRadius) {
-      gameState.herb.setTexture("herb-active");
-      this.input.on("pointerdown", (pointer) => {
+    // changes herb's appearance to indicate when it is active
+    gameState.inRadius
+      ? gameState.herb.setTexture("herb-active")
+      : gameState.herb.setTexture("herb");
+
+    // on mouse click, if inRadius is true, launch projectiles
+    this.input.on("pointerdown", (pointer) => {
+      if (gameState.inRadius) {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
           .setScale(0.05);
         this.physics.moveToObject(launched, gameState.enemy, 80);
-      });
-    } else {
-      // if inRadius is false, herb returns to regular texture
-      gameState.herb.setTexture("herb");
-      // TODO: bug: with the below code, removes collider permanently; without, can always shoot after entering radius (but collider still works)
-      gameState.projectiles.setActive(false).setVisible(false);
-      this.physics.world.removeCollider(gameState.enemyProjectileCollider);
-    }
+      }
+    });
 
     // // older version:space bar kills enemy:
     // if (herbDistanceX < 100 && herbDistanceY < 100) {
