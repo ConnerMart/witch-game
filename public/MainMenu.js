@@ -4,10 +4,19 @@ class MainMenu extends Phaser.Scene {
   }
 
   create() {
-    this.add.text(300, 400, "Click to Start\nPress Space to Attack", {
+    this.add.text(300, 400, "Click to Start", {
       fontSize: "50px",
       fill: "#000000",
     });
+    this.add.text(
+      300,
+      550,
+      "Move with WASD\n\nClick to Attack\n When Powered",
+      {
+        fontSize: "50px",
+        fill: "#000000",
+      }
+    );
     this.input.on("pointerdown", () => {
       this.scene.stop("MainMenu");
       this.scene.start("Level1");

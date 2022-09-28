@@ -19,7 +19,14 @@ class Level1 extends Phaser.Scene {
 
     gameState.witch = this.physics.add.sprite(500, 850, "witch").setScale(0.08);
     gameState.witch.setCollideWorldBounds(true);
-    gameState.cursors = this.input.keyboard.createCursorKeys();
+
+    gameState.cursors = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+    });
 
     gameState.enemy = this.physics.add.sprite(500, 250, "enemy").setScale(0.08);
     gameState.enemy.setCollideWorldBounds(true);
@@ -76,14 +83,26 @@ class Level1 extends Phaser.Scene {
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
 
     // space bar shoots projectile:
+    // if (herbDistanceX < 100 && herbDistanceY < 100) {
+    //   gameState.herb.setTexture("herb-active");
+    //   if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
+    //     const launched = gameState.projectiles
+    //       .create(gameState.witch.x, gameState.witch.y, "square-projectile")
+    //       .setScale(0.05);
+    //     this.physics.moveToObject(launched, gameState.enemy, 80);
+    //   }
+    // } else {
+    //   gameState.herb.setTexture("herb");
+    // }
+
     if (herbDistanceX < 100 && herbDistanceY < 100) {
       gameState.herb.setTexture("herb-active");
-      if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
+      this.input.on("pointerdown", () => {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
           .setScale(0.05);
         this.physics.moveToObject(launched, gameState.enemy, 80);
-      }
+      });
     } else {
       gameState.herb.setTexture("herb");
     }
