@@ -30,7 +30,7 @@ class Level1 extends Phaser.Scene {
       () => {
         gameState.witch.destroy();
         this.physics.pause();
-        this.add.text(325, 400, "Game Over", {
+        this.add.text(375, 400, "Defeat", {
           fontSize: "65px",
           fill: "#000000",
         });
@@ -47,7 +47,7 @@ class Level1 extends Phaser.Scene {
         this.physics.world.removeCollider(gameState.enemyWitchCollider);
         gameState.enemy.setActive(false).setVisible(false);
         this.physics.pause();
-        this.add.text(325, 400, "Victory", {
+        this.add.text(375, 400, "Victory", {
           fontSize: "65px",
           fill: "#000000",
         });
@@ -81,30 +81,29 @@ class Level1 extends Phaser.Scene {
 
     // if enemy exists, it moves toward witch:
     if (gameState.enemy) {
-      this.physics.moveToObject(gameState.enemy, gameState.witch, 60);
+      this.physics.moveToObject(gameState.enemy, gameState.witch, 50);
     }
 
-    // determines whether witch is close enough to activate herb
+    // determines whether witch is close enough to activate herb:
     const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
     gameState.inRadius = false;
     herbDistanceX < 100 && herbDistanceY < 100
       ? (gameState.inRadius = true)
       : (gameState.inRadius = false);
-
-    // changes herb's appearance to indicate when it is active
+    // changes herb's appearance to indicate when it is active:
     gameState.inRadius
       ? gameState.herb.setTexture("herb-active")
       : gameState.herb.setTexture("herb");
 
-    // on mouse click, if inRadius is true, launch projectiles
+    // on mouse click, if inRadius is true, launches projectiles:
     this.input.on("pointerdown", (pointer) => {
       if (gameState.inRadius) {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
           .setScale(0.05);
-        // projectile moves toward mouse position
-        this.physics.moveTo(launched, pointer.x, pointer.y, 80);
+        // projectile moves toward mouse position:
+        this.physics.moveTo(launched, pointer.x, pointer.y, 150);
       }
     });
   }
