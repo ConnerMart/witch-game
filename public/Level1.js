@@ -61,7 +61,6 @@ class Level1 extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
       shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
-      // leftMouse: Phaser.Input.MOUSE_UP,
     });
   }
 
@@ -104,20 +103,9 @@ class Level1 extends Phaser.Scene {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
           .setScale(0.05);
-        this.physics.moveToObject(launched, gameState.enemy, 80);
+        // projectile moves toward mouse position
+        this.physics.moveTo(launched, pointer.x, pointer.y, 80);
       }
     });
-
-    // // older version:space bar kills enemy:
-    // if (herbDistanceX < 100 && herbDistanceY < 100) {
-    //   gameState.herb.setTexture("herb-active");
-    //   if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
-    //     gameState.enemy.setVelocity(0, 0);
-    //     this.physics.world.removeCollider(gameState.enemyWitchCollider);
-    //     gameState.enemy.setActive(false).setVisible(false);
-    //   }
-    // } else {
-    //   gameState.herb.setTexture("herb");
-    // }
   }
 }
