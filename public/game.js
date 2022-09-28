@@ -1,5 +1,3 @@
-// import Phaser from "phaser";
-
 const gameState = {};
 
 const config = {
@@ -13,11 +11,10 @@ const config = {
   physics: {
     default: "arcade",
     arcade: {
-      //   gravity: { y: 200 },
       enableBody: true,
     },
   },
-  scene: [Level1],
+  scene: [MainMenu, Level1],
 };
 
 const game = new Phaser.Game(config);

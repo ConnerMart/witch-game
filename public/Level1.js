@@ -46,6 +46,10 @@ class Level1 extends Phaser.Scene {
         this.physics.world.removeCollider(gameState.enemyWitchCollider);
         gameState.enemy.setActive(false).setVisible(false);
         projectile.destroy();
+        this.add.text(325, 400, "Victory", {
+          fontSize: "65px",
+          fill: "#000000",
+        });
       }
     );
   }
@@ -71,18 +75,6 @@ class Level1 extends Phaser.Scene {
     const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
 
-    // // space bar kills enemy:
-    // if (herbDistanceX < 100 && herbDistanceY < 100) {
-    //   gameState.herb.setTexture("herb-active");
-    //   if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
-    //     gameState.enemy.setVelocity(0, 0);
-    //     this.physics.world.removeCollider(gameState.enemyWitchCollider);
-    //     gameState.enemy.setActive(false).setVisible(false);
-    //   }
-    // } else {
-    //   gameState.herb.setTexture("herb");
-    // }
-
     // space bar shoots projectile:
     if (herbDistanceX < 100 && herbDistanceY < 100) {
       gameState.herb.setTexture("herb-active");
@@ -95,5 +87,17 @@ class Level1 extends Phaser.Scene {
     } else {
       gameState.herb.setTexture("herb");
     }
+
+    // // space bar kills enemy:
+    // if (herbDistanceX < 100 && herbDistanceY < 100) {
+    //   gameState.herb.setTexture("herb-active");
+    //   if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
+    //     gameState.enemy.setVelocity(0, 0);
+    //     this.physics.world.removeCollider(gameState.enemyWitchCollider);
+    //     gameState.enemy.setActive(false).setVisible(false);
+    //   }
+    // } else {
+    //   gameState.herb.setTexture("herb");
+    // }
   }
 }
