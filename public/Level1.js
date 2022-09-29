@@ -12,35 +12,30 @@ class Level1 extends Phaser.Scene {
       "square-projectile",
       "assets/sprites/square-projectile.jpg"
     );
-    this.load.image("square-tree", "assets/sprites/square-tree.jpg");
+    this.load.image("tree", "assets/sprites/square-tree.jpg");
     this.load.image("side-panel", "assets/sprites/side-panel.jpg");
   }
 
   create() {
+    const sidePanel = this.physics.add.staticGroup();
+    sidePanel.create(950, 500, "side-panel").setScale(0.6).refreshBody();
+
     gameState.herb = this.physics.add.sprite(600, 650, "herb").setScale(0.08);
 
     gameState.witch = this.physics.add.sprite(400, 950, "witch").setScale(0.08);
     gameState.witch.setCollideWorldBounds(true);
+    this.physics.add.collider(gameState.witch, sidePanel);
 
     gameState.enemy = this.physics.add.sprite(400, 450, "enemy").setScale(0.08);
     gameState.enemy.setCollideWorldBounds(true);
-
-    const sidePanel = this.physics.add.staticGroup();
-    sidePanel.create(950, 500, "side-panel").setScale(0.6).refreshBody();
-    // TODO: current way of setting side panel as a boundary; look for a better way:
-    this.physics.add.collider(gameState.witch, sidePanel, () => {
-      gameState.witch.x -= 3;
-    });
-    this.physics.add.collider(gameState.enemy, sidePanel, () => {
-      gameState.enemy.x -= 3;
-    });
+    this.physics.add.collider(gameState.enemy, sidePanel);
 
     // when enemy touches witch, witch disappears and game over message displays:
     gameState.enemyWitchCollider = this.physics.add.collider(
       gameState.witch,
       gameState.enemy,
       () => {
-        gameState.witch.destroy();
+        gameState.witch.setActive(false).setVisible(false);
         this.physics.pause();
         this.add.text(300, 400, "Defeat", {
           fontSize: "65px",
@@ -50,7 +45,6 @@ class Level1 extends Phaser.Scene {
     );
 
     gameState.projectiles = this.physics.add.group();
-
     // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.enemyProjectileCollider = this.physics.add.collider(
       gameState.enemy,
@@ -73,27 +67,26 @@ class Level1 extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      // console.log(Phaser.Input.Keyboard.Keycodes) to find new ones
     });
 
-    //TODO: get this collider working
     const trees = this.physics.add.staticGroup();
-    trees.create(100, 900, "square-tree").setScale(0.12).refreshBody();
+    trees.create(100, 900, "tree").setScale(0.12).refreshBody(); // tree1
     this.physics.add.collider(gameState.witch, trees);
   }
 
   update() {
     // WASD movement controls:
     if (gameState.cursors.left.isDown) {
-      gameState.witch.x -= 3;
-    }
-    if (gameState.cursors.right.isDown) {
-      gameState.witch.x += 3;
-    }
-    if (gameState.cursors.up.isDown) {
-      gameState.witch.y -= 3;
-    }
-    if (gameState.cursors.down.isDown) {
-      gameState.witch.y += 3;
+      gameState.witch.setVelocityX(-100);
+    } else if (gameState.cursors.right.isDown) {
+      gameState.witch.setVelocityX(100);
+    } else if (gameState.cursors.up.isDown) {
+      gameState.witch.setVelocityY(-100);
+    } else if (gameState.cursors.down.isDown) {
+      gameState.witch.setVelocityY(100);
+    } else {
+      gameState.witch.setVelocity(0, 0);
     }
 
     // if enemy exists, it moves toward witch:
