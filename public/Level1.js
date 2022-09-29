@@ -12,16 +12,28 @@ class Level1 extends Phaser.Scene {
       "square-projectile",
       "assets/sprites/square-projectile.jpg"
     );
+    this.load.image("square-tree", "assets/sprites/square-tree.jpg");
+    this.load.image("side-panel", "assets/sprites/side-panel.jpg");
   }
 
   create() {
-    gameState.herb = this.physics.add.sprite(750, 600, "herb").setScale(0.08);
+    gameState.herb = this.physics.add.sprite(600, 650, "herb").setScale(0.08);
 
-    gameState.witch = this.physics.add.sprite(500, 850, "witch").setScale(0.08);
+    gameState.witch = this.physics.add.sprite(400, 950, "witch").setScale(0.08);
     gameState.witch.setCollideWorldBounds(true);
 
-    gameState.enemy = this.physics.add.sprite(500, 250, "enemy").setScale(0.08);
+    gameState.enemy = this.physics.add.sprite(400, 450, "enemy").setScale(0.08);
     gameState.enemy.setCollideWorldBounds(true);
+
+    const sidePanel = this.physics.add.staticGroup();
+    sidePanel.create(950, 500, "side-panel").setScale(0.6).refreshBody();
+    // TODO: current way of setting side panel as a boundary; look for a better way:
+    this.physics.add.collider(gameState.witch, sidePanel, () => {
+      gameState.witch.x -= 3;
+    });
+    this.physics.add.collider(gameState.enemy, sidePanel, () => {
+      gameState.enemy.x -= 3;
+    });
 
     // when enemy touches witch, witch disappears and game over message displays:
     gameState.enemyWitchCollider = this.physics.add.collider(
@@ -30,15 +42,16 @@ class Level1 extends Phaser.Scene {
       () => {
         gameState.witch.destroy();
         this.physics.pause();
-        this.add.text(375, 400, "Defeat", {
+        this.add.text(300, 400, "Defeat", {
           fontSize: "65px",
           fill: "#000000",
         });
       }
     );
 
-    // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.projectiles = this.physics.add.group();
+
+    // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.enemyProjectileCollider = this.physics.add.collider(
       gameState.enemy,
       gameState.projectiles,
@@ -47,7 +60,7 @@ class Level1 extends Phaser.Scene {
         this.physics.world.removeCollider(gameState.enemyWitchCollider);
         gameState.enemy.setActive(false).setVisible(false);
         this.physics.pause();
-        this.add.text(375, 400, "Victory", {
+        this.add.text(300, 400, "Victory", {
           fontSize: "65px",
           fill: "#000000",
         });
@@ -60,8 +73,12 @@ class Level1 extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
     });
+
+    //TODO: get this collider working
+    const trees = this.physics.add.staticGroup();
+    trees.create(100, 900, "square-tree").setScale(0.12).refreshBody();
+    this.physics.add.collider(gameState.witch, trees);
   }
 
   update() {
