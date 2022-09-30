@@ -20,13 +20,13 @@ class Level1 extends Phaser.Scene {
     const sidePanel = this.physics.add.staticGroup();
     sidePanel.create(950, 500, "side-panel").setScale(0.6).refreshBody();
 
-    gameState.herb = this.physics.add.sprite(600, 650, "herb").setScale(0.08);
+    gameState.herb = this.physics.add.sprite(600, 750, "herb").setScale(0.06);
 
-    gameState.witch = this.physics.add.sprite(400, 950, "witch").setScale(0.08);
+    gameState.witch = this.physics.add.sprite(415, 950, "witch").setScale(0.06);
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, sidePanel);
 
-    gameState.enemy = this.physics.add.sprite(400, 450, "enemy").setScale(0.08);
+    gameState.enemy = this.physics.add.sprite(415, 450, "enemy").setScale(0.06);
     gameState.enemy.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.enemy, sidePanel);
 
@@ -71,22 +71,36 @@ class Level1 extends Phaser.Scene {
     });
 
     const trees = this.physics.add.staticGroup();
-    trees.create(100, 900, "tree").setScale(0.12).refreshBody(); // tree1
+    trees.create(300, 950, "tree").setScale(0.17).refreshBody(); // tree1
+    trees.create(330, 865, "tree").setScale(0.17).refreshBody(); // tree2
+    trees.create(315, 775, "tree").setScale(0.17).refreshBody(); // tree3
+    trees.create(630, 680, "tree").setScale(0.17).refreshBody(); // tree4
+    trees.create(380, 370, "tree").setScale(0.17).refreshBody(); // tree5
+    trees.create(320, 460, "tree").setScale(0.17).refreshBody(); // tree6
+    trees.create(50, 150, "tree").setScale(0.17).refreshBody(); // tree7
+    trees.create(115, 230, "tree").setScale(0.17).refreshBody(); // tree8
+    trees.create(560, 130, "tree").setScale(0.17).refreshBody(); // tree9
+    trees.create(640, 200, "tree").setScale(0.17).refreshBody(); // tree10
+    trees.create(715, 280, "tree").setScale(0.17).refreshBody(); // tree11
+    trees.create(240, 45, "tree").setScale(0.17).refreshBody(); // tree12
     this.physics.add.collider(gameState.witch, trees);
+    this.physics.add.collider(gameState.enemy, trees);
   }
 
   update() {
     // WASD movement controls:
+    gameState.witch.setVelocity(0, 0);
     if (gameState.cursors.left.isDown) {
       gameState.witch.setVelocityX(-100);
-    } else if (gameState.cursors.right.isDown) {
+    }
+    if (gameState.cursors.right.isDown) {
       gameState.witch.setVelocityX(100);
-    } else if (gameState.cursors.up.isDown) {
+    }
+    if (gameState.cursors.up.isDown) {
       gameState.witch.setVelocityY(-100);
-    } else if (gameState.cursors.down.isDown) {
+    }
+    if (gameState.cursors.down.isDown) {
       gameState.witch.setVelocityY(100);
-    } else {
-      gameState.witch.setVelocity(0, 0);
     }
 
     // if enemy exists, it moves toward witch:
