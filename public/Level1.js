@@ -85,6 +85,13 @@ class Level1 extends Phaser.Scene {
     trees.create(240, 45, "tree").setScale(0.17).refreshBody(); // tree12
     this.physics.add.collider(gameState.witch, trees);
     this.physics.add.collider(gameState.enemy, trees);
+    this.physics.add.collider(
+      gameState.projectiles,
+      trees,
+      (projectile, tree) => {
+        projectile.setActive(false).setVisible(false);
+      }
+    );
   }
 
   update() {
