@@ -29,7 +29,7 @@ class Level1 extends Phaser.Scene {
     const groundTiles = map.addTilesetImage("TX Tileset Grass", "tiles");
     const treeTiles = map.addTilesetImage("TX Plant", "plants");
 
-    const groundLayer = map.createLayer("ground", groundTiles, 0, 0);
+    gameState.groundLayer = map.createLayer("ground", groundTiles, 0, 0);
     gameState.treesLayer = map.createLayer("trees", treeTiles, 0, 0);
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
@@ -66,6 +66,18 @@ class Level1 extends Phaser.Scene {
     );
 
     gameState.projectiles = this.physics.add.group();
+
+    // TODO: this works *sometimes*
+    this.physics.add.collider(
+      gameState.projectiles,
+      gameState.treesLayer,
+      (projectile, tree) => {
+        projectile.setVelocity(0, 0);
+        projectile.setActive(false).setVisible(false);
+        // destroy doesn't seem to do anything here
+        projectile.destroy();
+      }
+    );
 
     // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.enemyProjectileCollider = this.physics.add.collider(
@@ -160,8 +172,7 @@ class Level1 extends Phaser.Scene {
       }
     });
 
-    // // TODO: why does this slow things down so much ??
-    // // move to create function? but then it doesn't always work
+    // // TODO: this properly removes projectile but drastically slows down the game
     // this.physics.add.collider(
     //   gameState.projectiles,
     //   gameState.treesLayer,
