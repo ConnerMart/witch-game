@@ -21,6 +21,8 @@ class Level1 extends Phaser.Scene {
   }
 
   create() {
+    this.physics.world.setFPS(120);
+
     const map = this.make.tilemap({
       key: "map",
       tileWidth: 32,
@@ -67,14 +69,10 @@ class Level1 extends Phaser.Scene {
 
     gameState.projectiles = this.physics.add.group();
 
-    // TODO: this works *sometimes*
     this.physics.add.collider(
       gameState.projectiles,
       gameState.treesLayer,
       (projectile, tree) => {
-        projectile.setVelocity(0, 0);
-        projectile.setActive(false).setVisible(false);
-        // destroy doesn't seem to do anything here
         projectile.destroy();
       }
     );
@@ -166,7 +164,7 @@ class Level1 extends Phaser.Scene {
       if (gameState.inRadius) {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "square-projectile")
-          .setScale(0.05);
+          .setScale(0.1);
         // projectile moves toward mouse position:
         this.physics.moveTo(launched, pointer.x, pointer.y, 150);
       }
