@@ -30,25 +30,26 @@ class Level1 extends Phaser.Scene {
     const treeTiles = map.addTilesetImage("TX Plant", "plants");
 
     const groundLayer = map.createLayer("ground", groundTiles, 0, 0);
-    const treesLayer = map.createLayer("trees", treeTiles, 0, 0);
-    treesLayer.setCollisionByProperty({ collides: true });
+    gameState.treesLayer = map.createLayer("trees", treeTiles, 0, 0);
+    // gameState.treesLayer also includes colliders for UI sidebar
+    gameState.treesLayer.setCollisionByProperty({ collides: true });
 
     // // TURN ON to see colliders displayed
-    // const debugGraphics = this.add.graphics().setAlpha(0.75);
-    // treesLayer.renderDebug(debugGraphics, {
-    //   tileColor: null,
-    //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
-    // });
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    gameState.treesLayer.renderDebug(debugGraphics, {
+      tileColor: null,
+      collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
+    });
 
-    gameState.herb = this.physics.add.sprite(600, 750, "herb").setScale(0.05);
+    gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(0.05);
 
     gameState.witch = this.physics.add.sprite(545, 900, "witch").setScale(0.05);
     gameState.witch.setCollideWorldBounds(true);
-    this.physics.add.collider(gameState.witch, treesLayer);
+    this.physics.add.collider(gameState.witch, gameState.treesLayer);
 
     gameState.enemy = this.physics.add.sprite(415, 450, "enemy").setScale(0.06);
     gameState.enemy.setCollideWorldBounds(true);
-    this.physics.add.collider(gameState.enemy, treesLayer);
+    this.physics.add.collider(gameState.enemy, gameState.treesLayer);
 
     // when enemy touches witch, witch disappears and game over message displays:
     gameState.enemyWitchCollider = this.physics.add.collider(
@@ -65,6 +66,7 @@ class Level1 extends Phaser.Scene {
     );
 
     gameState.projectiles = this.physics.add.group();
+
     // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.enemyProjectileCollider = this.physics.add.collider(
       gameState.enemy,
@@ -157,5 +159,15 @@ class Level1 extends Phaser.Scene {
         this.physics.moveTo(launched, pointer.x, pointer.y, 150);
       }
     });
+
+    // // TODO: why does this slow things down so much ??
+    // // move to create function? but then it doesn't always work
+    // this.physics.add.collider(
+    //   gameState.projectiles,
+    //   gameState.treesLayer,
+    //   (projectile, tree) => {
+    //     projectile.destroy();
+    //   }
+    // );
   }
 }
