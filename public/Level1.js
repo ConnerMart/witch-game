@@ -7,15 +7,14 @@ class Level1 extends Phaser.Scene {
     this.load.image("tiles", "/assets/tilemaps/TX-Tileset-Grass.png");
     this.load.image("plants", "/assets/tilemaps/TX-Plant.png");
     this.load.tilemapTiledJSON("map", "assets/tilemaps/level-01.json");
-    //
+
     this.load.atlas(
       "witch",
       "/assets/sprites/witch-1.png",
       "/assets/sprites/witch-1_atlas.json"
     );
     this.load.animation("witch_anim", "assets/sprites/witch-1_anim.json");
-    //
-    // this.load.image("witch", "assets/sprites/square-witch.jpg");
+
     this.load.atlas(
       "enemy",
       "/assets/sprites/enemy-1.png",
@@ -23,9 +22,7 @@ class Level1 extends Phaser.Scene {
     );
     this.load.animation("enemy_anim", "assets/sprites/enemy-1_anim.json");
 
-    //
-
-    // this.load.image("enemy", "assets/sprites/square-enemy.jpg");
+    // old/placeholder sprites:
     this.load.image("herb", "assets/sprites/square-herb.jpg");
     this.load.image("herb-active", "assets/sprites/square-herb-active.jpg");
     this.load.image(
@@ -36,7 +33,6 @@ class Level1 extends Phaser.Scene {
 
   create() {
     this.physics.world.setFPS(120);
-
     const map = this.make.tilemap({
       key: "map",
       tileWidth: 32,
@@ -50,23 +46,21 @@ class Level1 extends Phaser.Scene {
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
-    // // TURN ON to see colliders displayed
+    //   // TURN ON to see colliders displayed
     // const debugGraphics = this.add.graphics().setAlpha(0.75);
     // gameState.treesLayer.renderDebug(debugGraphics, {
     //   tileColor: null,
     //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
     // });
 
-    gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(0.05);
+    gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(0.06);
 
-    // gameState.witch = this.physics.add.sprite(545, 900, "witch").setScale(0.05);
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
       .setScale(2);
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, gameState.treesLayer);
 
-    // gameState.enemy = this.physics.add.sprite(415, 450, "enemy").setScale(0.06);
     gameState.enemy = this.physics.add
       .sprite(415, 450, "enemy", "down_stand")
       .setScale(3);
