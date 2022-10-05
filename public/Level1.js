@@ -25,11 +25,7 @@ class Level1 extends Phaser.Scene {
     this.load.image("herb", "assets/sprites/herb-1.png");
     this.load.image("herb-active", "assets/sprites/herb-1-active.png");
 
-    // old/placeholder to be replaced:
-    this.load.image(
-      "square-projectile",
-      "assets/sprites/square-projectile.jpg"
-    );
+    this.load.image("projectile-1", "assets/sprites/projectile-1.png");
   }
 
   create() {
@@ -161,8 +157,8 @@ class Level1 extends Phaser.Scene {
     this.input.on("pointerdown", (pointer) => {
       if (gameState.inRadius) {
         const launched = gameState.projectiles
-          .create(gameState.witch.x, gameState.witch.y, "square-projectile")
-          .setScale(0.1);
+          .create(gameState.witch.x, gameState.witch.y, "projectile-1")
+          .setScale(0.4);
         // projectile moves toward mouse position:
         this.physics.moveTo(launched, pointer.x, pointer.y, 150);
       }
