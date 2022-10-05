@@ -43,12 +43,12 @@ class Level1 extends Phaser.Scene {
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
-    // // TURN ON to see colliders displayed
-    // const debugGraphics = this.add.graphics().setAlpha(0.75);
-    // gameState.treesLayer.renderDebug(debugGraphics, {
-    //   tileColor: null,
-    //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
-    // });
+    // TURN ON to see colliders displayed
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    gameState.treesLayer.renderDebug(debugGraphics, {
+      tileColor: null,
+      collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
+    });
 
     gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(1.5);
 
@@ -60,7 +60,7 @@ class Level1 extends Phaser.Scene {
 
     gameState.enemy = this.physics.add
       .sprite(415, 450, "enemy", "down_stand")
-      .setScale(3);
+      .setScale(2.5);
     gameState.enemy.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.enemy, gameState.treesLayer);
 
@@ -121,18 +121,17 @@ class Level1 extends Phaser.Scene {
     if (gameState.cursors.left.isDown) {
       gameState.witch.setVelocityX(-100);
       gameState.witch.anims.play("left_walk", true);
-    }
-    if (gameState.cursors.right.isDown) {
+    } else if (gameState.cursors.right.isDown) {
       gameState.witch.setVelocityX(100);
       gameState.witch.anims.play("right_walk", true);
-    }
-    if (gameState.cursors.up.isDown) {
+    } else if (gameState.cursors.up.isDown) {
       gameState.witch.setVelocityY(-100);
       gameState.witch.anims.play("up_walk", true);
-    }
-    if (gameState.cursors.down.isDown) {
+    } else if (gameState.cursors.down.isDown) {
       gameState.witch.setVelocityY(100);
       gameState.witch.anims.play("down_walk", true);
+    } else {
+      gameState.witch.anims.pause();
     }
 
     // if enemy exists, it moves toward witch:
@@ -158,7 +157,7 @@ class Level1 extends Phaser.Scene {
       if (gameState.inRadius) {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "projectile-1")
-          .setScale(0.4);
+          .setScale(0.35);
         // projectile moves toward mouse position:
         this.physics.moveTo(launched, pointer.x, pointer.y, 150);
       }
