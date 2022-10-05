@@ -8,6 +8,11 @@ class Level1 extends Phaser.Scene {
     this.load.image("plants", "/assets/tilemaps/TX-Plant.png");
     this.load.tilemapTiledJSON("map", "assets/tilemaps/level-01.json");
     //
+    this.load.atlas(
+      "witch-1",
+      "/assets/sprites/witch-1.png",
+      "/assets/sprites/witch-1_atlas.json"
+    );
     //
     this.load.image("witch", "assets/sprites/square-witch.jpg");
     this.load.image("enemy", "assets/sprites/square-enemy.jpg");
@@ -17,7 +22,6 @@ class Level1 extends Phaser.Scene {
       "square-projectile",
       "assets/sprites/square-projectile.jpg"
     );
-    this.load.image("tree", "assets/sprites/square-tree.jpg");
   }
 
   create() {
@@ -37,13 +41,17 @@ class Level1 extends Phaser.Scene {
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
     // // TURN ON to see colliders displayed
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    gameState.treesLayer.renderDebug(debugGraphics, {
-      tileColor: null,
-      collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
-    });
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // gameState.treesLayer.renderDebug(debugGraphics, {
+    //   tileColor: null,
+    //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
+    // });
 
     gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(0.05);
+
+    gameState.witch1 = this.physics.add
+      .sprite(545, 800, "witch-1", "up_stand")
+      .setScale(1.5);
 
     gameState.witch = this.physics.add.sprite(545, 900, "witch").setScale(0.05);
     gameState.witch.setCollideWorldBounds(true);
@@ -101,29 +109,6 @@ class Level1 extends Phaser.Scene {
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
       // console.log(Phaser.Input.Keyboard.Keycodes) to find new ones
     });
-
-    // const trees = this.physics.add.staticGroup();
-    // trees.create(300, 950, "tree").setScale(0.17).refreshBody(); // tree1
-    // trees.create(330, 865, "tree").setScale(0.17).refreshBody(); // tree2
-    // trees.create(315, 775, "tree").setScale(0.17).refreshBody(); // tree3
-    // trees.create(630, 680, "tree").setScale(0.17).refreshBody(); // tree4
-    // trees.create(380, 370, "tree").setScale(0.17).refreshBody(); // tree5
-    // trees.create(320, 460, "tree").setScale(0.17).refreshBody(); // tree6
-    // trees.create(50, 150, "tree").setScale(0.17).refreshBody(); // tree7
-    // trees.create(115, 230, "tree").setScale(0.17).refreshBody(); // tree8
-    // trees.create(560, 130, "tree").setScale(0.17).refreshBody(); // tree9
-    // trees.create(640, 200, "tree").setScale(0.17).refreshBody(); // tree10
-    // trees.create(715, 280, "tree").setScale(0.17).refreshBody(); // tree11
-    // trees.create(240, 45, "tree").setScale(0.17).refreshBody(); // tree12
-    // this.physics.add.collider(gameState.witch, trees);
-    // this.physics.add.collider(gameState.enemy, trees);
-    // this.physics.add.collider(
-    //   gameState.projectiles,
-    //   trees,
-    //   (projectile, tree) => {
-    //     projectile.setActive(false).setVisible(false);
-    //   }
-    // );
   }
 
   update() {
