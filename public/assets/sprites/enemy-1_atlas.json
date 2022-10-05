@@ -1,0 +1,164 @@
+{
+    "frames": [
+        {
+            "filename": "up_stand",
+            "frame": {
+                "w": 17,
+                "h": 29,
+                "x": 0,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "right_stand",
+            "frame": {
+                "w": 15,
+                "h": 29,
+                "x": 17,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "down_stand",
+            "frame": {
+                "w": 17,
+                "h": 29,
+                "x": 0,
+                "y": 29
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "left_stand",
+            "frame": {
+                "w": 15,
+                "h": 29,
+                "x": 17,
+                "y": 29
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "up_walk1",
+            "frame": {
+                "w": 17,
+                "h": 28,
+                "x": 32,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "up_walk2",
+            "frame": {
+                "w": 17,
+                "h": 28,
+                "x": 32,
+                "y": 28
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "right_walk1",
+            "frame": {
+                "w": 15,
+                "h": 28,
+                "x": 49,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "right_walk2",
+            "frame": {
+                "w": 16,
+                "h": 28,
+                "x": 0,
+                "y": 58
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "down_walk1",
+            "frame": {
+                "w": 17,
+                "h": 28,
+                "x": 16,
+                "y": 58
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "down_walk2",
+            "frame": {
+                "w": 17,
+                "h": 28,
+                "x": 33,
+                "y": 56
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "left_walk1",
+            "frame": {
+                "w": 16,
+                "h": 28,
+                "x": 49,
+                "y": 28
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "left_walk2",
+            "frame": {
+                "w": 15,
+                "h": 28,
+                "x": 64,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }
+    ],
+    "meta": {
+        "description": "Atlas generado con Atlas Packer Gamma V2",
+        "web": "https://gammafp.github.io/atlas-packer-phaser/"
+    }
+}

@@ -1,0 +1,84 @@
+{
+  "anims": [
+    {
+      "key": "up_walk_enemy",
+      "type": "frames",
+      "repeat": -1,
+      "frameRate": 8,
+      "frames": [
+        {
+          "key": "enemy",
+          "frame": "up_stand"
+        },
+        {
+          "key": "enemy",
+          "frame": "up_walk1"
+        },
+        {
+          "key": "enemy",
+          "frame": "up_walk2"
+        }
+      ]
+    },
+    {
+      "key": "right_walk_enemy",
+      "type": "frames",
+      "repeat": -1,
+      "frameRate": 8,
+      "frames": [
+        {
+          "key": "enemy",
+          "frame": "right_stand"
+        },
+        {
+          "key": "enemy",
+          "frame": "right_walk1"
+        },
+        {
+          "key": "enemy",
+          "frame": "right_walk2"
+        }
+      ]
+    },
+    {
+      "key": "down_walk_enemy",
+      "type": "frames",
+      "repeat": -1,
+      "frameRate": 8,
+      "frames": [
+        {
+          "key": "enemy",
+          "frame": "down_stand"
+        },
+        {
+          "key": "enemy",
+          "frame": "down_walk1"
+        },
+        {
+          "key": "enemy",
+          "frame": "down_walk2"
+        }
+      ]
+    },
+    {
+      "key": "left_walk_enemy",
+      "type": "frames",
+      "repeat": -1,
+      "frameRate": 8,
+      "frames": [
+        {
+          "key": "enemy",
+          "frame": "left_stand"
+        },
+        {
+          "key": "enemy",
+          "frame": "left_walk1"
+        },
+        {
+          "key": "enemy",
+          "frame": "left_walk2"
+        }
+      ]
+    }
+  ]
+}

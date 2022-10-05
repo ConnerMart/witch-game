@@ -9,13 +9,23 @@ class Level1 extends Phaser.Scene {
     this.load.tilemapTiledJSON("map", "assets/tilemaps/level-01.json");
     //
     this.load.atlas(
-      "witch-1",
+      "witch",
       "/assets/sprites/witch-1.png",
       "/assets/sprites/witch-1_atlas.json"
     );
+    this.load.animation("witch_anim", "assets/sprites/witch-1_anim.json");
     //
-    this.load.image("witch", "assets/sprites/square-witch.jpg");
-    this.load.image("enemy", "assets/sprites/square-enemy.jpg");
+    // this.load.image("witch", "assets/sprites/square-witch.jpg");
+    this.load.atlas(
+      "enemy",
+      "/assets/sprites/enemy-1.png",
+      "/assets/sprites/enemy-1_atlas.json"
+    );
+    this.load.animation("enemy_anim", "assets/sprites/enemy-1_anim.json");
+
+    //
+
+    // this.load.image("enemy", "assets/sprites/square-enemy.jpg");
     this.load.image("herb", "assets/sprites/square-herb.jpg");
     this.load.image("herb-active", "assets/sprites/square-herb-active.jpg");
     this.load.image(
@@ -49,15 +59,17 @@ class Level1 extends Phaser.Scene {
 
     gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(0.05);
 
-    gameState.witch1 = this.physics.add
-      .sprite(545, 800, "witch-1", "up_stand")
-      .setScale(1.5);
-
-    gameState.witch = this.physics.add.sprite(545, 900, "witch").setScale(0.05);
+    // gameState.witch = this.physics.add.sprite(545, 900, "witch").setScale(0.05);
+    gameState.witch = this.physics.add
+      .sprite(545, 900, "witch", "up_stand")
+      .setScale(2);
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, gameState.treesLayer);
 
-    gameState.enemy = this.physics.add.sprite(415, 450, "enemy").setScale(0.06);
+    // gameState.enemy = this.physics.add.sprite(415, 450, "enemy").setScale(0.06);
+    gameState.enemy = this.physics.add
+      .sprite(415, 450, "enemy", "down_stand")
+      .setScale(3);
     gameState.enemy.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.enemy, gameState.treesLayer);
 
@@ -114,22 +126,28 @@ class Level1 extends Phaser.Scene {
   update() {
     // WASD movement controls:
     gameState.witch.setVelocity(0, 0);
+
     if (gameState.cursors.left.isDown) {
       gameState.witch.setVelocityX(-100);
+      gameState.witch.anims.play("left_walk", true);
     }
     if (gameState.cursors.right.isDown) {
       gameState.witch.setVelocityX(100);
+      gameState.witch.anims.play("right_walk", true);
     }
     if (gameState.cursors.up.isDown) {
       gameState.witch.setVelocityY(-100);
+      gameState.witch.anims.play("up_walk", true);
     }
     if (gameState.cursors.down.isDown) {
       gameState.witch.setVelocityY(100);
+      gameState.witch.anims.play("down_walk", true);
     }
 
     // if enemy exists, it moves toward witch:
     if (gameState.enemy) {
       this.physics.moveToObject(gameState.enemy, gameState.witch, 50);
+      gameState.enemy.anims.play("down_walk_enemy", true);
     }
 
     // determines whether witch is close enough to activate herb:
@@ -154,14 +172,5 @@ class Level1 extends Phaser.Scene {
         this.physics.moveTo(launched, pointer.x, pointer.y, 150);
       }
     });
-
-    // // TODO: this properly removes projectile but drastically slows down the game
-    // this.physics.add.collider(
-    //   gameState.projectiles,
-    //   gameState.treesLayer,
-    //   (projectile, tree) => {
-    //     projectile.destroy();
-    //   }
-    // );
   }
 }
