@@ -46,7 +46,7 @@ class Level1 extends Phaser.Scene {
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
-    //   // TURN ON to see colliders displayed
+    // // TURN ON to see colliders displayed
     // const debugGraphics = this.add.graphics().setAlpha(0.75);
     // gameState.treesLayer.renderDebug(debugGraphics, {
     //   tileColor: null,

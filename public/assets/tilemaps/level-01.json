@@ -132,7 +132,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -150,7 +150,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -209,6 +209,29 @@
                 }, 
                 {
                  "id":74,
+                 "objectgroup":
+                    {
+                     "draworder":"index",
+                     "id":2,
+                     "name":"",
+                     "objects":[
+                            {
+                             "class":"",
+                             "height":24,
+                             "id":1,
+                             "name":"",
+                             "rotation":0,
+                             "visible":true,
+                             "width":10,
+                             "x":11,
+                             "y":-0.69
+                            }],
+                     "opacity":1,
+                     "type":"objectgroup",
+                     "visible":true,
+                     "x":0,
+                     "y":0
+                    },
                  "properties":[
                         {
                          "name":"collides",
