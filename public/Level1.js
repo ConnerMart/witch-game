@@ -22,9 +22,10 @@ class Level1 extends Phaser.Scene {
     );
     this.load.animation("enemy_anim", "assets/sprites/enemy-1_anim.json");
 
-    // old/placeholder sprites:
-    this.load.image("herb", "assets/sprites/square-herb.jpg");
-    this.load.image("herb-active", "assets/sprites/square-herb-active.jpg");
+    this.load.image("herb", "assets/sprites/herb-1.png");
+    this.load.image("herb-active", "assets/sprites/herb-1-active.png");
+
+    // old/placeholder to be replaced:
     this.load.image(
       "square-projectile",
       "assets/sprites/square-projectile.jpg"
@@ -53,7 +54,7 @@ class Level1 extends Phaser.Scene {
     //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
     // });
 
-    gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(0.06);
+    gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(1.5);
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
