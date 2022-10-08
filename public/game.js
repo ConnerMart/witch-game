@@ -1,3 +1,5 @@
+// import Phaser from "phaser";
+
 const gameState = {};
 
 const config = {
@@ -12,7 +14,7 @@ const config = {
     default: "arcade",
     arcade: {
       enableBody: true,
-      debug: true,
+      // debug: true,
     },
   },
   scene: [MainMenu, Level1],

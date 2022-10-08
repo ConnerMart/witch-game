@@ -4,10 +4,12 @@ class Level1 extends Phaser.Scene {
   }
 
   preload() {
+    // tilesets and tilemap:
     this.load.image("tiles", "/assets/tilemaps/TX-Tileset-Grass.png");
     this.load.image("plants", "/assets/tilemaps/TX-Plant.png");
     this.load.tilemapTiledJSON("map", "assets/tilemaps/level-01.json");
 
+    // witch sprite atlas and animations:
     this.load.atlas(
       "witch",
       "/assets/sprites/witch-1.png",
@@ -15,6 +17,7 @@ class Level1 extends Phaser.Scene {
     );
     this.load.animation("witch_anim", "assets/sprites/witch-1_anim.json");
 
+    // enemy sprite atlas and animations:
     this.load.atlas(
       "enemy",
       "/assets/sprites/enemy-1.png",
@@ -22,9 +25,11 @@ class Level1 extends Phaser.Scene {
     );
     this.load.animation("enemy_anim", "assets/sprites/enemy-1_anim.json");
 
+    // herb sprite and active version:
     this.load.image("herb", "assets/sprites/herb-1.png");
     this.load.image("herb-active", "assets/sprites/herb-1-active.png");
 
+    // projectile sprite:
     this.load.image("projectile-1", "assets/sprites/projectile-1.png");
   }
 
@@ -43,14 +48,23 @@ class Level1 extends Phaser.Scene {
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
-    // TURN ON to see colliders displayed
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    gameState.treesLayer.renderDebug(debugGraphics, {
-      tileColor: null,
-      collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
-    });
+    // // TURN ON to see colliders displayed
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // gameState.treesLayer.renderDebug(debugGraphics, {
+    //   tileColor: null,
+    //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
+    // });
 
-    gameState.herb = this.physics.add.sprite(645, 695, "herb").setScale(1.5);
+    gameState.herb = this.physics.add.sprite(635, 685, "herb").setScale(1.5);
+    gameState.herb2 = this.physics.add.sprite(375, 275, "herb").setScale(1.5);
+
+    // // TODO: WORKING ON CLASS:
+    // gameState.herb3 = new Herb({
+    //   scene: this,
+    //   key: "herb",
+    //   x: 500,
+    //   y: 500,
+    // });
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
@@ -117,7 +131,7 @@ class Level1 extends Phaser.Scene {
   update() {
     // WASD movement controls:
     gameState.witch.setVelocity(0, 0);
-
+    // add idle animation here //
     if (gameState.cursors.left.isDown) {
       gameState.witch.setVelocityX(-100);
       gameState.witch.anims.play("left_walk", true);
@@ -140,6 +154,10 @@ class Level1 extends Phaser.Scene {
       gameState.enemy.anims.play("down_walk_enemy", true);
     }
 
+    // if (gameState.enemy.body.velocity.x === 0) {
+    //   console.log("blocked");
+    // }
+
     // determines whether witch is close enough to activate herb:
     const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
@@ -152,9 +170,22 @@ class Level1 extends Phaser.Scene {
       ? gameState.herb.setTexture("herb-active")
       : gameState.herb.setTexture("herb");
 
+    // TODO: currently a COPY OF ABOVE until classes work:
+    const herbDistanceX2 = Math.abs(gameState.witch.x - gameState.herb2.x);
+    const herbDistanceY2 = Math.abs(gameState.witch.y - gameState.herb2.y);
+    gameState.inRadius2 = false;
+    herbDistanceX2 < 100 && herbDistanceY2 < 100
+      ? (gameState.inRadius2 = true)
+      : (gameState.inRadius2 = false);
+    // changes herb's appearance to indicate when it is active:
+    gameState.inRadius2
+      ? gameState.herb2.setTexture("herb-active")
+      : gameState.herb2.setTexture("herb");
+
     // on mouse click, if inRadius is true, launches projectiles:
     this.input.on("pointerdown", (pointer) => {
-      if (gameState.inRadius) {
+      // TODO: remove this || after classes are set up
+      if (gameState.inRadius || gameState.inRadius2) {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "projectile-1")
           .setScale(0.35);
