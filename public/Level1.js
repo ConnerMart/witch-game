@@ -1,3 +1,10 @@
+class Herb extends Phaser.GameObjects.Sprite {
+  constructor(config) {
+    super(config.scene, config.x, config.y, "herb");
+    config.scene.add.existing(this);
+  }
+}
+
 class Level1 extends Phaser.Scene {
   constructor() {
     super({ key: "Level1" });
@@ -55,16 +62,13 @@ class Level1 extends Phaser.Scene {
     //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
     // });
 
+    // added individually:
     gameState.herb = this.physics.add.sprite(635, 685, "herb").setScale(1.5);
     gameState.herb2 = this.physics.add.sprite(375, 275, "herb").setScale(1.5);
 
-    // // TODO: WORKING ON CLASS:
-    // gameState.herb3 = new Herb({
-    //   scene: this,
-    //   key: "herb",
-    //   x: 500,
-    //   y: 500,
-    // });
+    // added with Herb class:
+    gameState.herb3 = new Herb({ scene: this, x: 500, y: 500 });
+    gameState.herb4 = new Herb({ scene: this, x: 500, y: 600 });
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
@@ -154,10 +158,6 @@ class Level1 extends Phaser.Scene {
       gameState.enemy.anims.play("down_walk_enemy", true);
     }
 
-    // if (gameState.enemy.body.velocity.x === 0) {
-    //   console.log("blocked");
-    // }
-
     // determines whether witch is close enough to activate herb:
     const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
@@ -181,6 +181,17 @@ class Level1 extends Phaser.Scene {
     gameState.inRadius2
       ? gameState.herb2.setTexture("herb-active")
       : gameState.herb2.setTexture("herb");
+
+    // TODO: THIRD COPY, using Herb class:
+    const herbDistanceX3 = Math.abs(gameState.witch.x - Herb.x);
+    const herbDistanceY3 = Math.abs(gameState.witch.y - Herb.y);
+    gameState.inRadius3 = false;
+    herbDistanceX3 < 100 && herbDistanceY3 < 100
+      ? (gameState.inRadius3 = true)
+      : (gameState.inRadius3 = false);
+    // console.log(gameState.inRadius3);
+    // ? Herb.setTexture("herb-active")
+    // : Herb.herb2.setTexture("herb");
 
     // on mouse click, if inRadius is true, launches projectiles:
     this.input.on("pointerdown", (pointer) => {
