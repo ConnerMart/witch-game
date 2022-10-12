@@ -69,11 +69,15 @@ class Level1 extends Phaser.Scene {
     // added with Herb class:
     gameState.herb3 = new Herb({ scene: this, x: 800, y: 500 });
     gameState.herb4 = new Herb({ scene: this, x: 650, y: 750 });
+    gameState.herb5 = new Herb({ scene: this, x: 800, y: 750 });
 
     // TODO: experiment:
     gameState.herbArray = [];
     gameState.herbArray.push(gameState.herb3);
     gameState.herbArray.push(gameState.herb4);
+    gameState.herbArray.push(gameState.herb5);
+
+    console.log(gameState.herbArray);
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
@@ -163,56 +167,46 @@ class Level1 extends Phaser.Scene {
       gameState.enemy.anims.play("down_walk_enemy", true);
     }
 
-    const canShoot = false;
     // TODO:
     // figure out how to get this into the class ?? is .method anything??
-    //
-    // currently: checks distance and sets texture for all herbs in herbArray
     function checkDistance(herbX, herbY) {
       const herbDistanceX = Math.abs(gameState.witch.x - herbX);
       const herbDistanceY = Math.abs(gameState.witch.y - herbY);
       if (herbDistanceX < 100 && herbDistanceY < 100) {
-        console.log("in range!");
         return true;
       } else {
         return false;
       }
     }
-    // changing below to length - 1 swaps which herb works
-    for (let i = 0; i < gameState.herbArray.length; i++) {
-      if (checkDistance(gameState.herbArray[i].x, gameState.herbArray[i].y)) {
-        gameState.herbArray[i].setTexture("herb-active");
+
+    for (const herb of gameState.herbArray) {
+      if (checkDistance(herb.x, herb.y)) {
+        herb.setTexture("herb-active");
         gameState.canShoot = true;
+        console.log(gameState.canShoot); // TODO: this console log itself still works but the boolean doesn't change for herb3(or 4 if 5 exists)
+        // canShoot changing to true only seems to work with the LAST herb in the array
+        // because it is iterating through and setting the same canShoot value each time ??
+        // how to separate those out? - so each herb has its own true/false "active" value?
+        // THEN have witch's projectile function check whether it is true for ANY of the herbArray
       } else {
-        gameState.herbArray[i].setTexture("herb");
+        herb.setTexture("herb");
         gameState.canShoot = false;
       }
     }
-    //
-    // determines whether witch is close enough to activate herb:
-    const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
-    const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
-    gameState.inRadius = false;
-    herbDistanceX < 100 && herbDistanceY < 100
-      ? (gameState.inRadius = true)
-      : (gameState.inRadius = false);
-    // changes herb's appearance to indicate when it is active:
-    gameState.inRadius
-      ? gameState.herb.setTexture("herb-active")
-      : gameState.herb.setTexture("herb");
 
-    // // TODO: COPY, using Herb class, NOT currently working:
-    // const herbDistanceX3 = Math.abs(gameState.witch.x - Herb.x);
-    // const herbDistanceY3 = Math.abs(gameState.witch.y - Herb.y);
-    // gameState.inRadius3 = false;
-    // herbDistanceX3 < 100 && herbDistanceY3 < 100
-    //   ? (gameState.inRadius3 = true)
-    //   : (gameState.inRadius3 = false);
-    // // console.log(gameState.inRadius3);
-    // // ? Herb.setTexture("herb-active")
-    // // : Herb.herb2.setTexture("herb");
-    // //
-    // //
+    //
+    // // determines whether witch is close enough to activate herb:
+    // // for FIRST 2 (non-class) HERBS
+    // const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
+    // const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
+    // gameState.inRadius = false;
+    // herbDistanceX < 100 && herbDistanceY < 100
+    //   ? (gameState.inRadius = true)
+    //   : (gameState.inRadius = false);
+    // // changes herb's appearance to indicate when it is active:
+    // gameState.inRadius
+    //   ? gameState.herb.setTexture("herb-active")
+    //   : gameState.herb.setTexture("herb");
 
     // TODO: changing to canShoot from inRadius
     // on mouse click, if inRadius is true, launches projectiles:
