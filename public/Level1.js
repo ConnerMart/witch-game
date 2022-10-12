@@ -67,8 +67,13 @@ class Level1 extends Phaser.Scene {
     gameState.herb2 = this.physics.add.sprite(375, 275, "herb").setScale(1.5);
 
     // added with Herb class:
-    gameState.herb3 = new Herb({ scene: this, x: 500, y: 500 });
-    gameState.herb4 = new Herb({ scene: this, x: 500, y: 600 });
+    gameState.herb3 = new Herb({ scene: this, x: 800, y: 500 });
+    gameState.herb4 = new Herb({ scene: this, x: 650, y: 750 });
+
+    // TODO: experiment:
+    gameState.herbArray = [];
+    gameState.herbArray.push(gameState.herb3);
+    gameState.herbArray.push(gameState.herb4);
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
@@ -158,6 +163,32 @@ class Level1 extends Phaser.Scene {
       gameState.enemy.anims.play("down_walk_enemy", true);
     }
 
+    const canShoot = false;
+    // TODO:
+    // figure out how to get this into the class ?? is .method anything??
+    //
+    // currently: checks distance and sets texture for all herbs in herbArray
+    function checkDistance(herbX, herbY) {
+      const herbDistanceX = Math.abs(gameState.witch.x - herbX);
+      const herbDistanceY = Math.abs(gameState.witch.y - herbY);
+      if (herbDistanceX < 100 && herbDistanceY < 100) {
+        console.log("in range!");
+        return true;
+      } else {
+        return false;
+      }
+    }
+    // changing below to length - 1 swaps which herb works
+    for (let i = 0; i < gameState.herbArray.length; i++) {
+      if (checkDistance(gameState.herbArray[i].x, gameState.herbArray[i].y)) {
+        gameState.herbArray[i].setTexture("herb-active");
+        gameState.canShoot = true;
+      } else {
+        gameState.herbArray[i].setTexture("herb");
+        gameState.canShoot = false;
+      }
+    }
+    //
     // determines whether witch is close enough to activate herb:
     const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
     const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
@@ -170,33 +201,23 @@ class Level1 extends Phaser.Scene {
       ? gameState.herb.setTexture("herb-active")
       : gameState.herb.setTexture("herb");
 
-    // TODO: currently a COPY OF ABOVE until classes work:
-    const herbDistanceX2 = Math.abs(gameState.witch.x - gameState.herb2.x);
-    const herbDistanceY2 = Math.abs(gameState.witch.y - gameState.herb2.y);
-    gameState.inRadius2 = false;
-    herbDistanceX2 < 100 && herbDistanceY2 < 100
-      ? (gameState.inRadius2 = true)
-      : (gameState.inRadius2 = false);
-    // changes herb's appearance to indicate when it is active:
-    gameState.inRadius2
-      ? gameState.herb2.setTexture("herb-active")
-      : gameState.herb2.setTexture("herb");
+    // // TODO: COPY, using Herb class, NOT currently working:
+    // const herbDistanceX3 = Math.abs(gameState.witch.x - Herb.x);
+    // const herbDistanceY3 = Math.abs(gameState.witch.y - Herb.y);
+    // gameState.inRadius3 = false;
+    // herbDistanceX3 < 100 && herbDistanceY3 < 100
+    //   ? (gameState.inRadius3 = true)
+    //   : (gameState.inRadius3 = false);
+    // // console.log(gameState.inRadius3);
+    // // ? Herb.setTexture("herb-active")
+    // // : Herb.herb2.setTexture("herb");
+    // //
+    // //
 
-    // TODO: THIRD COPY, using Herb class:
-    const herbDistanceX3 = Math.abs(gameState.witch.x - Herb.x);
-    const herbDistanceY3 = Math.abs(gameState.witch.y - Herb.y);
-    gameState.inRadius3 = false;
-    herbDistanceX3 < 100 && herbDistanceY3 < 100
-      ? (gameState.inRadius3 = true)
-      : (gameState.inRadius3 = false);
-    // console.log(gameState.inRadius3);
-    // ? Herb.setTexture("herb-active")
-    // : Herb.herb2.setTexture("herb");
-
+    // TODO: changing to canShoot from inRadius
     // on mouse click, if inRadius is true, launches projectiles:
     this.input.on("pointerdown", (pointer) => {
-      // TODO: remove this || after classes are set up
-      if (gameState.inRadius || gameState.inRadius2) {
+      if (gameState.canShoot) {
         const launched = gameState.projectiles
           .create(gameState.witch.x, gameState.witch.y, "projectile-1")
           .setScale(0.35);
