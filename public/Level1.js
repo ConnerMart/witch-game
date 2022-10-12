@@ -188,6 +188,9 @@ class Level1 extends Phaser.Scene {
         // because it is iterating through and setting the same canShoot value each time ??
         // how to separate those out? - so each herb has its own true/false "active" value?
         // THEN have witch's projectile function check whether it is true for ANY of the herbArray
+        //
+        // SO, change gameState.canShoot to herb.active in this function, and add a for loop (same thing as above) inside the "pointerdown" listener but outside the existing if statement, then change the if statement's condition to herb.active
+        // ??
       } else {
         herb.setTexture("herb");
         gameState.canShoot = false;
