@@ -182,8 +182,7 @@ class Level1 extends Phaser.Scene {
     for (const herb of gameState.herbArray) {
       if (checkDistance(herb.x, herb.y)) {
         herb.setTexture("herb-active");
-        gameState.canShoot = true;
-        console.log(gameState.canShoot); // TODO: this console log itself still works but the boolean doesn't change for herb3(or 4 if 5 exists)
+        herb.active = true;
         // canShoot changing to true only seems to work with the LAST herb in the array
         // because it is iterating through and setting the same canShoot value each time ??
         // how to separate those out? - so each herb has its own true/false "active" value?
@@ -193,11 +192,35 @@ class Level1 extends Phaser.Scene {
         // ??
       } else {
         herb.setTexture("herb");
-        gameState.canShoot = false;
+        herb.active = false;
       }
     }
 
-    //
+    // TODO: EXPERIMENTING: FIXED !!!!!!!!
+    this.input.on("pointerdown", (pointer) => {
+      for (const herb of gameState.herbArray) {
+        if (herb.active) {
+          const launched = gameState.projectiles
+            .create(gameState.witch.x, gameState.witch.y, "projectile-1")
+            .setScale(0.35);
+          // projectile moves toward mouse position:
+          this.physics.moveTo(launched, pointer.x, pointer.y, 150);
+        }
+      }
+    });
+
+    // // TODO: match condition to whatever's used above
+    // // on mouse click, if inRadius is true, launches projectiles:
+    // this.input.on("pointerdown", (pointer) => {
+    //   if (gameState.canShoot) {
+    //     const launched = gameState.projectiles
+    //       .create(gameState.witch.x, gameState.witch.y, "projectile-1")
+    //       .setScale(0.35);
+    //     // projectile moves toward mouse position:
+    //     this.physics.moveTo(launched, pointer.x, pointer.y, 150);
+    //   }
+    // });
+
     // // determines whether witch is close enough to activate herb:
     // // for FIRST 2 (non-class) HERBS
     // const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
@@ -210,17 +233,5 @@ class Level1 extends Phaser.Scene {
     // gameState.inRadius
     //   ? gameState.herb.setTexture("herb-active")
     //   : gameState.herb.setTexture("herb");
-
-    // TODO: changing to canShoot from inRadius
-    // on mouse click, if inRadius is true, launches projectiles:
-    this.input.on("pointerdown", (pointer) => {
-      if (gameState.canShoot) {
-        const launched = gameState.projectiles
-          .create(gameState.witch.x, gameState.witch.y, "projectile-1")
-          .setScale(0.35);
-        // projectile moves toward mouse position:
-        this.physics.moveTo(launched, pointer.x, pointer.y, 150);
-      }
-    });
   }
 }
