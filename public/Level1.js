@@ -5,6 +5,30 @@ class Herb extends Phaser.GameObjects.Sprite {
   }
 }
 
+class Enemy extends Phaser.Physics.Arcade.Sprite {
+  constructor(config) {
+    super(config.scene, config.x, config.y, "enemy");
+    this.scene.physics.add.existing(this);
+    this.scene.add.existing(this);
+    this.setScale(2.5);
+    this.setCollideWorldBounds(true);
+    this.scene.physics.add.collider(this, gameState.treesLayer);
+  }
+
+  enemyWitchCollider = this.scene.physics.add.collider(
+    gameState.witch,
+    this,
+    () => {
+      gameState.witch.setActive(false).setVisible(false);
+      this.scene.physics.pause();
+      this.scene.add.text(300, 400, "Defeat", {
+        fontSize: "65px",
+        fill: "#000000",
+      });
+    }
+  );
+}
+
 class Level1 extends Phaser.Scene {
   constructor() {
     super({ key: "Level1" });
@@ -42,6 +66,15 @@ class Level1 extends Phaser.Scene {
 
   create() {
     this.physics.world.setFPS(120);
+    gameState.cursors = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      // console.log(Phaser.Input.Keyboard.Keycodes) to find new ones
+    });
+
     const map = this.make.tilemap({
       key: "map",
       tileWidth: 32,
@@ -49,18 +82,17 @@ class Level1 extends Phaser.Scene {
     });
     const groundTiles = map.addTilesetImage("TX Tileset Grass", "tiles");
     const treeTiles = map.addTilesetImage("TX Plant", "plants");
-
     gameState.groundLayer = map.createLayer("ground", groundTiles, 0, 0);
     gameState.treesLayer = map.createLayer("trees", treeTiles, 0, 0);
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
-    // // TURN ON to see colliders displayed
-    // const debugGraphics = this.add.graphics().setAlpha(0.75);
-    // gameState.treesLayer.renderDebug(debugGraphics, {
-    //   tileColor: null,
-    //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
-    // });
+    // TURN ON to see colliders displayed
+    const debugGraphics = this.add.graphics().setAlpha(0.75);
+    gameState.treesLayer.renderDebug(debugGraphics, {
+      tileColor: null,
+      collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
+    });
 
     gameState.herbArray = [
       (gameState.herb1 = new Herb({ scene: this, x: 630, y: 670 })),
@@ -75,13 +107,21 @@ class Level1 extends Phaser.Scene {
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, gameState.treesLayer);
 
-    gameState.enemy = this.physics.add
-      .sprite(415, 450, "enemy", "down_stand")
-      .setScale(2.5);
-    gameState.enemy.setCollideWorldBounds(true);
-    this.physics.add.collider(gameState.enemy, gameState.treesLayer);
+    // gameState.enemy = this.physics.add
+    //   .sprite(415, 450, "enemy", "down_stand")
+    //   .setScale(2.5);
+    // gameState.enemy.setCollideWorldBounds(true);
+    // this.physics.add.collider(gameState.enemy, gameState.treesLayer);
+
+    gameState.enemyArray = [
+      (gameState.enemy1 = new Enemy({ scene: this, x: 415, y: 450 })),
+      (gameState.enemy2 = new Enemy({ scene: this, x: 600, y: 600 })),
+    ];
+    gameState.enemyCount = gameState.enemyArray.length;
+    console.log(gameState.enemyCount);
 
     // when enemy touches witch, witch disappears and game over message displays:
+    // TODO: remove this? after confirming it works in class
     gameState.enemyWitchCollider = this.physics.add.collider(
       gameState.witch,
       gameState.enemy,
@@ -104,30 +144,20 @@ class Level1 extends Phaser.Scene {
       }
     );
 
-    // when a projectile touches enemy, enemy disappears and victory message displays:
     gameState.enemyProjectileCollider = this.physics.add.collider(
-      gameState.enemy,
+      [...gameState.enemyArray],
       gameState.projectiles,
       (enemy, projectile) => {
-        gameState.enemy.setVelocity(0, 0);
+        enemy.setVelocity(0, 0);
         this.physics.world.removeCollider(gameState.enemyWitchCollider);
-        gameState.enemy.setActive(false).setVisible(false);
-        this.physics.pause();
-        this.add.text(300, 400, "Victory", {
-          fontSize: "65px",
-          fill: "#000000",
-        });
+        enemy.setActive(false).setVisible(false);
+        // this.physics.pause();
+        // this.add.text(300, 400, "Victory", {
+        //   fontSize: "65px",
+        //   fill: "#000000",
+        // });
       }
     );
-
-    gameState.cursors = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
-      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      // console.log(Phaser.Input.Keyboard.Keycodes) to find new ones
-    });
   }
 
   update() {
@@ -150,11 +180,17 @@ class Level1 extends Phaser.Scene {
       gameState.witch.anims.pause();
     }
 
+    // TODO: replace with iterator below:
     // if enemy exists, it moves toward witch:
-    if (gameState.enemy) {
-      this.physics.moveToObject(gameState.enemy, gameState.witch, 50);
-      gameState.enemy.anims.play("down_walk_enemy", true);
-    }
+    // if (gameState.enemy) {
+    //   this.physics.moveToObject(gameState.enemy, gameState.witch, 50);
+    //   gameState.enemy.anims.play("down_walk_enemy", true);
+    // }
+
+    // for (const enemy of gameState.enemyArray) {
+    //   this.physics.moveToObject(enemy, gameState.witch, 50);
+    //   enemy.anims.play("down_walk_enemy", true);
+    // }
 
     // TODO:
     // figure out how to get this into the class ?? is .method anything??
@@ -190,5 +226,13 @@ class Level1 extends Phaser.Scene {
         }
       }
     });
+
+    if (gameState.enemyCount === 0) {
+      this.physics.pause();
+      this.add.text(300, 400, "Victory", {
+        fontSize: "65px",
+        fill: "#000000",
+      });
+    }
   }
 }
