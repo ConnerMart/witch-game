@@ -62,22 +62,12 @@ class Level1 extends Phaser.Scene {
     //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
     // });
 
-    // added individually:
-    gameState.herb = this.physics.add.sprite(635, 685, "herb").setScale(1.5);
-    gameState.herb2 = this.physics.add.sprite(375, 275, "herb").setScale(1.5);
-
-    // added with Herb class:
-    gameState.herb3 = new Herb({ scene: this, x: 800, y: 500 });
-    gameState.herb4 = new Herb({ scene: this, x: 650, y: 750 });
-    gameState.herb5 = new Herb({ scene: this, x: 800, y: 750 });
-
-    // TODO: experiment:
-    gameState.herbArray = [];
-    gameState.herbArray.push(gameState.herb3);
-    gameState.herbArray.push(gameState.herb4);
-    gameState.herbArray.push(gameState.herb5);
-
-    console.log(gameState.herbArray);
+    gameState.herbArray = [
+      (gameState.herb1 = new Herb({ scene: this, x: 630, y: 670 })),
+      (gameState.herb2 = new Herb({ scene: this, x: 720, y: 400 })),
+      (gameState.herb3 = new Herb({ scene: this, x: 240, y: 760 })),
+      (gameState.herb4 = new Herb({ scene: this, x: 305, y: 290 })),
+    ];
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
@@ -106,7 +96,6 @@ class Level1 extends Phaser.Scene {
     );
 
     gameState.projectiles = this.physics.add.group();
-
     this.physics.add.collider(
       gameState.projectiles,
       gameState.treesLayer,
@@ -183,20 +172,13 @@ class Level1 extends Phaser.Scene {
       if (checkDistance(herb.x, herb.y)) {
         herb.setTexture("herb-active");
         herb.active = true;
-        // canShoot changing to true only seems to work with the LAST herb in the array
-        // because it is iterating through and setting the same canShoot value each time ??
-        // how to separate those out? - so each herb has its own true/false "active" value?
-        // THEN have witch's projectile function check whether it is true for ANY of the herbArray
-        //
-        // SO, change gameState.canShoot to herb.active in this function, and add a for loop (same thing as above) inside the "pointerdown" listener but outside the existing if statement, then change the if statement's condition to herb.active
-        // ??
       } else {
         herb.setTexture("herb");
         herb.active = false;
       }
     }
 
-    // TODO: EXPERIMENTING: FIXED !!!!!!!!
+    // on mouse click, if herb.active is true for any member of herbArray, launches projectiles:
     this.input.on("pointerdown", (pointer) => {
       for (const herb of gameState.herbArray) {
         if (herb.active) {
@@ -208,30 +190,5 @@ class Level1 extends Phaser.Scene {
         }
       }
     });
-
-    // // TODO: match condition to whatever's used above
-    // // on mouse click, if inRadius is true, launches projectiles:
-    // this.input.on("pointerdown", (pointer) => {
-    //   if (gameState.canShoot) {
-    //     const launched = gameState.projectiles
-    //       .create(gameState.witch.x, gameState.witch.y, "projectile-1")
-    //       .setScale(0.35);
-    //     // projectile moves toward mouse position:
-    //     this.physics.moveTo(launched, pointer.x, pointer.y, 150);
-    //   }
-    // });
-
-    // // determines whether witch is close enough to activate herb:
-    // // for FIRST 2 (non-class) HERBS
-    // const herbDistanceX = Math.abs(gameState.witch.x - gameState.herb.x);
-    // const herbDistanceY = Math.abs(gameState.witch.y - gameState.herb.y);
-    // gameState.inRadius = false;
-    // herbDistanceX < 100 && herbDistanceY < 100
-    //   ? (gameState.inRadius = true)
-    //   : (gameState.inRadius = false);
-    // // changes herb's appearance to indicate when it is active:
-    // gameState.inRadius
-    //   ? gameState.herb.setTexture("herb-active")
-    //   : gameState.herb.setTexture("herb");
   }
 }
