@@ -105,6 +105,12 @@ class Level1 extends Phaser.Scene {
       collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
     });
 
+    gameState.witch = this.physics.add
+      .sprite(545, 900, "witch", "up_stand")
+      .setScale(2);
+    gameState.witch.setCollideWorldBounds(true);
+    this.physics.add.collider(gameState.witch, gameState.treesLayer);
+
     gameState.herbArray = [
       (gameState.herb1 = new Herb({ scene: this, x: 630, y: 670 })),
       (gameState.herb2 = new Herb({ scene: this, x: 720, y: 400 })),
@@ -112,19 +118,13 @@ class Level1 extends Phaser.Scene {
       (gameState.herb4 = new Herb({ scene: this, x: 305, y: 290 })),
     ];
 
-    gameState.witch = this.physics.add
-      .sprite(545, 900, "witch", "up_stand")
-      .setScale(2);
-    gameState.witch.setCollideWorldBounds(true);
-    this.physics.add.collider(gameState.witch, gameState.treesLayer);
-
     gameState.enemyArray = [
       (gameState.enemy1 = new Enemy({ scene: this, x: 415, y: 450 })),
       (gameState.enemy2 = new Enemy({ scene: this, x: 850, y: 300 })),
       (gameState.enemy3 = new Enemy({ scene: this, x: 415, y: 150 })),
     ];
-    // gameState.enemyCount = gameState.enemyArray.length;
-    // console.log(gameState.enemyCount);
+    gameState.enemyCount = gameState.enemyArray.length;
+    console.log(gameState.enemyCount);
 
     gameState.projectiles = this.physics.add.group();
     this.physics.add.collider(
@@ -140,9 +140,11 @@ class Level1 extends Phaser.Scene {
       gameState.projectiles,
       (enemy, projectile) => {
         enemy.setVelocity(0, 0);
-        this.physics.world.removeCollider(enemy.enemyWitchCollider);
         enemy.setActive(false).setVisible(false);
-        projectile.setActive(false).setVisible(false);
+        this.physics.world.removeCollider(enemy.enemyWitchCollider);
+        projectile.destroy();
+
+        console.log(gameState.enemyCount);
         // this.physics.pause();
         // this.add.text(300, 400, "Victory", {
         //   fontSize: "65px",
@@ -200,6 +202,16 @@ class Level1 extends Phaser.Scene {
         }
       }
     });
+
+    for (const enemy of gameState.enemyArray) {
+      if (enemy.body.velocity.x === 0 && enemy.body.velocity.y === 0) {
+        this.physics.pause();
+        this.add.text(300, 400, "Victory", {
+          fontSize: "65px",
+          fill: "#000000",
+        });
+      }
+    }
 
     // if (gameState.enemyCount === 0) {
     //   this.physics.pause();
