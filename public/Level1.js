@@ -3,6 +3,16 @@ class Herb extends Phaser.GameObjects.Sprite {
     super(config.scene, config.x, config.y, "herb");
     config.scene.add.existing(this);
   }
+
+  checkDistance(herbX, herbY) {
+    const herbDistanceX = Math.abs(gameState.witch.x - herbX);
+    const herbDistanceY = Math.abs(gameState.witch.y - herbY);
+    if (herbDistanceX < 100 && herbDistanceY < 100) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
@@ -108,12 +118,6 @@ class Level1 extends Phaser.Scene {
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, gameState.treesLayer);
 
-    // gameState.enemy = this.physics.add
-    //   .sprite(415, 450, "enemy", "down_stand")
-    //   .setScale(2.5);
-    // gameState.enemy.setCollideWorldBounds(true);
-    // this.physics.add.collider(gameState.enemy, gameState.treesLayer);
-
     gameState.enemyArray = [
       (gameState.enemy1 = new Enemy({ scene: this, x: 415, y: 450 })),
       (gameState.enemy2 = new Enemy({ scene: this, x: 850, y: 300 })),
@@ -121,19 +125,6 @@ class Level1 extends Phaser.Scene {
     ];
     // gameState.enemyCount = gameState.enemyArray.length;
     // console.log(gameState.enemyCount);
-
-    // gameState.enemyWitchCollider = this.physics.add.collider(
-    //   gameState.witch,
-    //   gameState.enemy,
-    //   () => {
-    //     gameState.witch.setActive(false).setVisible(false);
-    //     this.physics.pause();
-    //     this.add.text(300, 400, "Defeat", {
-    //       fontSize: "65px",
-    //       fill: "#000000",
-    //     });
-    //   }
-    // );
 
     gameState.projectiles = this.physics.add.group();
     this.physics.add.collider(
@@ -149,13 +140,14 @@ class Level1 extends Phaser.Scene {
       gameState.projectiles,
       (enemy, projectile) => {
         enemy.setVelocity(0, 0);
-        this.physics.world.removeCollider(gameState.enemyWitchCollider);
+        this.physics.world.removeCollider(enemy.enemyWitchCollider);
         enemy.setActive(false).setVisible(false);
-        this.physics.pause();
-        this.add.text(300, 400, "Victory", {
-          fontSize: "65px",
-          fill: "#000000",
-        });
+        projectile.setActive(false).setVisible(false);
+        // this.physics.pause();
+        // this.add.text(300, 400, "Victory", {
+        //   fontSize: "65px",
+        //   fill: "#000000",
+        // });
       }
     );
   }
@@ -180,32 +172,14 @@ class Level1 extends Phaser.Scene {
       gameState.witch.anims.pause();
     }
 
-    // TODO: replace with iterator below:
-    // if enemy exists, it moves toward witch:
-    // if (gameState.enemy) {
-    //   this.physics.moveToObject(gameState.enemy, gameState.witch, 50);
-    //   gameState.enemy.anims.play("down_walk_enemy", true);
-    // }
-
+    // all enemies move toward witch
     for (const enemy of gameState.enemyArray) {
       this.physics.moveToObject(enemy, gameState.witch, 50);
       enemy.anims.play("down_walk_enemy", true);
     }
 
-    // TODO:
-    // figure out how to get this into the class ?? is .method anything??
-    function checkDistance(herbX, herbY) {
-      const herbDistanceX = Math.abs(gameState.witch.x - herbX);
-      const herbDistanceY = Math.abs(gameState.witch.y - herbY);
-      if (herbDistanceX < 100 && herbDistanceY < 100) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     for (const herb of gameState.herbArray) {
-      if (checkDistance(herb.x, herb.y)) {
+      if (herb.checkDistance(herb.x, herb.y)) {
         herb.setTexture("herb-active");
         herb.active = true;
       } else {
@@ -214,7 +188,7 @@ class Level1 extends Phaser.Scene {
       }
     }
 
-    // on mouse click, if herb.active is true for any member of herbArray, launches projectiles:
+    // on mouse click, if herb.active is true for ANY member of herbArray, launches projectiles:
     this.input.on("pointerdown", (pointer) => {
       for (const herb of gameState.herbArray) {
         if (herb.active) {
