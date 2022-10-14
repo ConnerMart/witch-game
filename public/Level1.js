@@ -15,6 +15,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.add.collider(this, gameState.treesLayer);
   }
 
+  // when enemy touches witch, witch disappears and game over message displays:
   enemyWitchCollider = this.scene.physics.add.collider(
     gameState.witch,
     this,
@@ -115,25 +116,24 @@ class Level1 extends Phaser.Scene {
 
     gameState.enemyArray = [
       (gameState.enemy1 = new Enemy({ scene: this, x: 415, y: 450 })),
-      (gameState.enemy2 = new Enemy({ scene: this, x: 600, y: 600 })),
+      (gameState.enemy2 = new Enemy({ scene: this, x: 850, y: 300 })),
+      (gameState.enemy3 = new Enemy({ scene: this, x: 415, y: 150 })),
     ];
-    gameState.enemyCount = gameState.enemyArray.length;
-    console.log(gameState.enemyCount);
+    // gameState.enemyCount = gameState.enemyArray.length;
+    // console.log(gameState.enemyCount);
 
-    // when enemy touches witch, witch disappears and game over message displays:
-    // TODO: remove this? after confirming it works in class
-    gameState.enemyWitchCollider = this.physics.add.collider(
-      gameState.witch,
-      gameState.enemy,
-      () => {
-        gameState.witch.setActive(false).setVisible(false);
-        this.physics.pause();
-        this.add.text(300, 400, "Defeat", {
-          fontSize: "65px",
-          fill: "#000000",
-        });
-      }
-    );
+    // gameState.enemyWitchCollider = this.physics.add.collider(
+    //   gameState.witch,
+    //   gameState.enemy,
+    //   () => {
+    //     gameState.witch.setActive(false).setVisible(false);
+    //     this.physics.pause();
+    //     this.add.text(300, 400, "Defeat", {
+    //       fontSize: "65px",
+    //       fill: "#000000",
+    //     });
+    //   }
+    // );
 
     gameState.projectiles = this.physics.add.group();
     this.physics.add.collider(
@@ -151,11 +151,11 @@ class Level1 extends Phaser.Scene {
         enemy.setVelocity(0, 0);
         this.physics.world.removeCollider(gameState.enemyWitchCollider);
         enemy.setActive(false).setVisible(false);
-        // this.physics.pause();
-        // this.add.text(300, 400, "Victory", {
-        //   fontSize: "65px",
-        //   fill: "#000000",
-        // });
+        this.physics.pause();
+        this.add.text(300, 400, "Victory", {
+          fontSize: "65px",
+          fill: "#000000",
+        });
       }
     );
   }
@@ -187,10 +187,10 @@ class Level1 extends Phaser.Scene {
     //   gameState.enemy.anims.play("down_walk_enemy", true);
     // }
 
-    // for (const enemy of gameState.enemyArray) {
-    //   this.physics.moveToObject(enemy, gameState.witch, 50);
-    //   enemy.anims.play("down_walk_enemy", true);
-    // }
+    for (const enemy of gameState.enemyArray) {
+      this.physics.moveToObject(enemy, gameState.witch, 50);
+      enemy.anims.play("down_walk_enemy", true);
+    }
 
     // TODO:
     // figure out how to get this into the class ?? is .method anything??
@@ -227,12 +227,12 @@ class Level1 extends Phaser.Scene {
       }
     });
 
-    if (gameState.enemyCount === 0) {
-      this.physics.pause();
-      this.add.text(300, 400, "Victory", {
-        fontSize: "65px",
-        fill: "#000000",
-      });
-    }
+    // if (gameState.enemyCount === 0) {
+    //   this.physics.pause();
+    //   this.add.text(300, 400, "Victory", {
+    //     fontSize: "65px",
+    //     fill: "#000000",
+    //   });
+    // }
   }
 }
