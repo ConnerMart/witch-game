@@ -38,6 +38,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
       });
     }
   );
+
+  isAlive = true;
 }
 
 class Level1 extends Phaser.Scene {
@@ -123,8 +125,6 @@ class Level1 extends Phaser.Scene {
       (gameState.enemy2 = new Enemy({ scene: this, x: 850, y: 300 })),
       (gameState.enemy3 = new Enemy({ scene: this, x: 415, y: 150 })),
     ];
-    gameState.enemyCount = gameState.enemyArray.length;
-    console.log(gameState.enemyCount);
 
     gameState.projectiles = this.physics.add.group();
     this.physics.add.collider(
@@ -144,12 +144,7 @@ class Level1 extends Phaser.Scene {
         this.physics.world.removeCollider(enemy.enemyWitchCollider);
         projectile.destroy();
 
-        console.log(gameState.enemyCount);
-        // this.physics.pause();
-        // this.add.text(300, 400, "Victory", {
-        //   fontSize: "65px",
-        //   fill: "#000000",
-        // });
+        enemy.isAlive = false;
       }
     );
   }
@@ -203,22 +198,18 @@ class Level1 extends Phaser.Scene {
       }
     });
 
-    for (const enemy of gameState.enemyArray) {
-      if (enemy.body.velocity.x === 0 && enemy.body.velocity.y === 0) {
-        this.physics.pause();
-        this.add.text(300, 400, "Victory", {
-          fontSize: "65px",
-          fill: "#000000",
-        });
-      }
+    // TODO: refactor this:
+    // is none of the 3 enemies are alive, victory screen displays
+    if (
+      !gameState.enemy1.isAlive &&
+      !gameState.enemy2.isAlive &&
+      !gameState.enemy3.isAlive
+    ) {
+      // this.physics.pause();
+      this.add.text(300, 400, "Victory", {
+        fontSize: "65px",
+        fill: "#000000",
+      });
     }
-
-    // if (gameState.enemyCount === 0) {
-    //   this.physics.pause();
-    //   this.add.text(300, 400, "Victory", {
-    //     fontSize: "65px",
-    //     fill: "#000000",
-    //   });
-    // }
   }
 }
