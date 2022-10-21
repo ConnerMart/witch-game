@@ -1,3 +1,11 @@
+const gameState = {};
+// import gameState from "./index";
+
+import easystarjs from "easystarjs";
+// import { Game } from "phaser";
+
+// import Herb from "./Herb";
+
 class Herb extends Phaser.GameObjects.Sprite {
   constructor(config) {
     super(config.scene, config.x, config.y, "herb");
@@ -42,7 +50,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   isAlive = true;
 }
 
-class Level1 extends Phaser.Scene {
+export default class Level1 extends Phaser.Scene {
   constructor() {
     super({ key: "Level1" });
   }
@@ -147,6 +155,33 @@ class Level1 extends Phaser.Scene {
         enemy.isAlive = false;
       }
     );
+
+    // gameState.easystar = new easystarjs.js();
+
+    // gameState.easystar.setGrid(map);
+    // gameState.easystar.setAcceptableTiles(groundTiles);
+
+    // // easystar.findPath(startX, startY, endX, endY, callback);
+
+    // gameState.easystar.findPath(
+    //   gameState.enemy1.x,
+    //   gameState.enemy1.y,
+    //   gameState.witch.x,
+    //   gameState.witch.y,
+    //   function (path) {
+    //     if (path === null) {
+    //       console.log("Path not found");
+    //     } else {
+    //       console.log("Path found");
+    //     }
+    //   }
+    // );
+
+    // gameState.easystar.calculate();
+
+    // // //
+    // // //
+    // // //
   }
 
   update() {

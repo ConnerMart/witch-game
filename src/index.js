@@ -1,6 +1,9 @@
-// import Phaser from "phaser";
+// export default gameState = {};
 
-const gameState = {};
+import Phaser from "phaser";
+
+import MainMenu from "./MainMenu";
+import Level1 from "./Level1";
 
 const config = {
   type: Phaser.AUTO,
