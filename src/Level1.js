@@ -1,7 +1,7 @@
 const gameState = {};
 // import gameState from "./index";
 
-import easystarjs from "easystarjs";
+// var easystarjs = require("easystarjs");
 // import { Game } from "phaser";
 
 // import Herb from "./Herb";
@@ -156,32 +156,33 @@ export default class Level1 extends Phaser.Scene {
       }
     );
 
-    // gameState.easystar = new easystarjs.js();
+    // gameState.enemyTreeCollider = this.physics.add.collider(
+    //   [...gameState.enemyArray],
+    //   gameState.treesLayer,
+    //   (enemy, tree) => {
+    //     console.log("yep");
+    //   }
+    // );
 
-    // gameState.easystar.setGrid(map);
-    // gameState.easystar.setAcceptableTiles(groundTiles);
-
-    // // easystar.findPath(startX, startY, endX, endY, callback);
-
-    // gameState.easystar.findPath(
+    // // TODO: GET PATHFINDING WORKING
+    // var easystar = new easystarjs.js();
+    // easystar.setGrid(map.layers[0].data);
+    // easystar.setAcceptableTiles(map.layers[0].data);
+    // console.log(map.layers[0].data);
+    // easystar.findPath(
     //   gameState.enemy1.x,
     //   gameState.enemy1.y,
     //   gameState.witch.x,
     //   gameState.witch.y,
     //   function (path) {
     //     if (path === null) {
-    //       console.log("Path not found");
+    //       console.log("Path could not be found");
     //     } else {
-    //       console.log("Path found");
+    //       console.log("Path was calculated");
     //     }
     //   }
     // );
-
-    // gameState.easystar.calculate();
-
-    // // //
-    // // //
-    // // //
+    // easystar.calculate();
   }
 
   update() {
@@ -206,7 +207,8 @@ export default class Level1 extends Phaser.Scene {
 
     // all enemies move toward witch
     for (const enemy of gameState.enemyArray) {
-      this.physics.moveToObject(enemy, gameState.witch, 50);
+      // this.physics.moveToObject(enemy, gameState.witch, 50);
+      this.physics.moveTo(enemy, gameState.witch.x, gameState.witch.y, 50);
       enemy.anims.play("down_walk_enemy", true);
     }
 
