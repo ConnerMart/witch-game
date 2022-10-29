@@ -1,10 +1,4 @@
 const gameState = {};
-// import gameState from "./index";
-
-// var easystarjs = require("easystarjs");
-// import { Game } from "phaser";
-
-// import Herb from "./Herb";
 
 class Herb extends Phaser.GameObjects.Sprite {
   constructor(config) {
@@ -30,7 +24,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.setScale(2.5);
     this.setCollideWorldBounds(true);
-    this.scene.physics.add.collider(this, gameState.treesLayer);
+    // this.enemyTreeCollider = this.scene.physics.add.collider(
+    //   this,
+    //   gameState.treesLayer
+    // );
   }
 
   // when enemy touches witch, witch disappears and game over message displays:
@@ -40,7 +37,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     () => {
       gameState.witch.setActive(false).setVisible(false);
       this.scene.physics.pause();
-      this.scene.add.text(300, 400, "Defeat", {
+      this.scene.add.text(450, 400, "Defeat", {
         fontSize: "65px",
         fill: "#000000",
       });
@@ -121,6 +118,15 @@ export default class Level1 extends Phaser.Scene {
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, gameState.treesLayer);
 
+    // // this needs to be a sprite(?) to move along w/ witch
+    // gameState.auraCircle = this.add.circle(
+    //   gameState.witch.x,
+    //   gameState.witch.y,
+    //   100,
+    //   0x4d39e0,
+    //   150
+    // );
+
     gameState.herbArray = [
       (gameState.herb1 = new Herb({ scene: this, x: 630, y: 670 })),
       (gameState.herb2 = new Herb({ scene: this, x: 720, y: 400 })),
@@ -156,33 +162,17 @@ export default class Level1 extends Phaser.Scene {
       }
     );
 
-    // gameState.enemyTreeCollider = this.physics.add.collider(
-    //   [...gameState.enemyArray],
+    //
+    //
+    // this.physics.add.collider(
+    //   gameState.enemyArray,
     //   gameState.treesLayer,
     //   (enemy, tree) => {
-    //     console.log("yep");
+    //     console.log(enemy);
     //   }
     // );
 
-    // // TODO: GET PATHFINDING WORKING
-    // var easystar = new easystarjs.js();
-    // easystar.setGrid(map.layers[0].data);
-    // easystar.setAcceptableTiles(map.layers[0].data);
-    // console.log(map.layers[0].data);
-    // easystar.findPath(
-    //   gameState.enemy1.x,
-    //   gameState.enemy1.y,
-    //   gameState.witch.x,
-    //   gameState.witch.y,
-    //   function (path) {
-    //     if (path === null) {
-    //       console.log("Path could not be found");
-    //     } else {
-    //       console.log("Path was calculated");
-    //     }
-    //   }
-    // );
-    // easystar.calculate();
+    gameState.passThrough = false;
   }
 
   update() {
@@ -211,6 +201,21 @@ export default class Level1 extends Phaser.Scene {
       this.physics.moveTo(enemy, gameState.witch.x, gameState.witch.y, 50);
       enemy.anims.play("down_walk_enemy", true);
     }
+
+    // gameState.treeTimer = setTimeout(() => {
+    //   gameState.passThrough = !gameState.passThrough;
+    //   // setTimeout(() => {
+    //   //   gameState.passThrough = false;
+    //   // }, 2000);
+    // }, 4000);
+
+    // if (gameState.passThrough) {
+    //   for (const enemy of gameState.enemyArray) {
+    //     this.physics.world.removeCollider(enemy.enemyTreeCollider);
+    //     this.physics.world.removeCollider(enemy.enemyTreeCollider);
+    //     this.physics.world.removeCollider(enemy.enemyTreeCollider);
+    //   }
+    // }
 
     for (const herb of gameState.herbArray) {
       if (herb.checkDistance(herb.x, herb.y)) {
@@ -243,7 +248,7 @@ export default class Level1 extends Phaser.Scene {
       !gameState.enemy3.isAlive
     ) {
       // this.physics.pause();
-      this.add.text(300, 400, "Victory", {
+      this.add.text(450, 400, "Victory", {
         fontSize: "65px",
         fill: "#000000",
       });
