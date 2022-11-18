@@ -35,12 +35,14 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     gameState.witch,
     this,
     () => {
-      gameState.witch.setActive(false).setVisible(false);
-      this.scene.physics.pause();
-      this.scene.add.text(450, 400, "Defeat", {
-        fontSize: "65px",
-        fill: "#000000",
-      });
+      if (!gameState.witch.shield) {
+        gameState.witch.setActive(false).setVisible(false);
+        this.scene.physics.pause();
+        this.scene.add.text(450, 400, "Defeat", {
+          fontSize: "65px",
+          fill: "#000000",
+        });
+      }
     }
   );
 
@@ -105,18 +107,20 @@ export default class Level1 extends Phaser.Scene {
     // gameState.treesLayer also includes colliders for UI sidebar
     gameState.treesLayer.setCollisionByProperty({ collides: true });
 
-    // TURN ON to see colliders displayed
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    gameState.treesLayer.renderDebug(debugGraphics, {
-      tileColor: null,
-      collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
-    });
+    // // TURN ON to see colliders displayed
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // gameState.treesLayer.renderDebug(debugGraphics, {
+    //   tileColor: null,
+    //   collidingTileColor: new Phaser.Display.Color(200, 200, 200, 255),
+    // });
 
     gameState.witch = this.physics.add
       .sprite(545, 900, "witch", "up_stand")
       .setScale(2);
     gameState.witch.setCollideWorldBounds(true);
     this.physics.add.collider(gameState.witch, gameState.treesLayer);
+
+    gameState.witch.shield = false;
 
     // // this needs to be a sprite(?) to move along w/ witch
     // gameState.auraCircle = this.add.circle(
@@ -161,18 +165,6 @@ export default class Level1 extends Phaser.Scene {
         enemy.isAlive = false;
       }
     );
-
-    //
-    //
-    // this.physics.add.collider(
-    //   gameState.enemyArray,
-    //   gameState.treesLayer,
-    //   (enemy, tree) => {
-    //     console.log(enemy);
-    //   }
-    // );
-
-    gameState.passThrough = false;
   }
 
   update() {
@@ -202,21 +194,6 @@ export default class Level1 extends Phaser.Scene {
       enemy.anims.play("down_walk_enemy", true);
     }
 
-    // gameState.treeTimer = setTimeout(() => {
-    //   gameState.passThrough = !gameState.passThrough;
-    //   // setTimeout(() => {
-    //   //   gameState.passThrough = false;
-    //   // }, 2000);
-    // }, 4000);
-
-    // if (gameState.passThrough) {
-    //   for (const enemy of gameState.enemyArray) {
-    //     this.physics.world.removeCollider(enemy.enemyTreeCollider);
-    //     this.physics.world.removeCollider(enemy.enemyTreeCollider);
-    //     this.physics.world.removeCollider(enemy.enemyTreeCollider);
-    //   }
-    // }
-
     for (const herb of gameState.herbArray) {
       if (herb.checkDistance(herb.x, herb.y)) {
         herb.setTexture("herb-active");
@@ -224,6 +201,7 @@ export default class Level1 extends Phaser.Scene {
       } else {
         herb.setTexture("herb");
         herb.active = false;
+        gameState.witch.shield = false;
       }
     }
 
@@ -240,8 +218,34 @@ export default class Level1 extends Phaser.Scene {
       }
     });
 
+    // while inside herb radius, holding down space gives witch a shield that lets her touch enemies without dying:
+    if (gameState.cursors.space.isDown) {
+      for (const herb of gameState.herbArray) {
+        if (herb.active) {
+          gameState.witch.shield = true;
+        }
+      }
+    } else {
+      gameState.witch.shield = false;
+    }
+
+    if (gameState.witch.shield) {
+      gameState.shieldVisual = this.add.circle(
+        gameState.witch.x,
+        gameState.witch.y,
+        30,
+        0x4d39e0,
+        750
+      );
+    }
+
+    setTimeout(removeVisual, 100);
+    function removeVisual() {
+      gameState.shieldVisual.setScale(0);
+    }
+
     // TODO: refactor this:
-    // is none of the 3 enemies are alive, victory screen displays
+    // if all 3 enemies are dead, victory screen displays
     if (
       !gameState.enemy1.isAlive &&
       !gameState.enemy2.isAlive &&
