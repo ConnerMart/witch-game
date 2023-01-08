@@ -229,6 +229,7 @@ export default class Level1 extends Phaser.Scene {
       gameState.witch.shield = false;
     }
 
+    // TODO: visible shield indicator
     if (gameState.witch.shield) {
       gameState.shieldVisual = this.add.circle(
         gameState.witch.x,
